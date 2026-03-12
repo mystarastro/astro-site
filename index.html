@@ -1,41 +1,210 @@
 <!DOCTYPE html>
-<html>
+<html lang="ms">
 <head>
-<title>My Astrology Website</title>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Astrology Website</title>
 <style>
-body{
-font-family:Arial;
-background:#0b0033;
-color:white;
-text-align:center;
-padding:50px;
+body {
+  margin:0;
+  font-family:'Arial',sans-serif;
+  background: linear-gradient(to bottom, #0b0033, #1a0a4a);
+  color: #fff;
+  text-align:center;
+  min-height:100vh;
+  overflow-x:hidden;
+  position:relative;
 }
-button{
-padding:10px 20px;
-background:#6a00ff;
-color:white;
-border:none;
-border-radius:6px;
+h1 {
+  margin-top:50px;
+  font-size:2em;
+  text-shadow: 0 0 15px #a36cff;
+}
+p { font-size:1em; line-height:1.4em; }
+
+/* 动态星星 */
+@keyframes twinkle {0%,100%{opacity:0.8;}50%{opacity:0.2;}}
+.star {
+  position:absolute;
+  background:#fff;
+  border-radius:50%;
+  width:2px;
+  height:2px;
+  animation:twinkle 2s infinite;
+}
+
+/* 输入区域 */
+.input-container { margin-top:30px; }
+input, select {
+  padding:12px;
+  margin:5px;
+  border-radius:5px;
+  border:none;
+  font-size:1em;
+  width:calc(30% - 12px);
+  min-width:100px;
+}
+button {
+  padding:12px 25px;
+  background: linear-gradient(to right, #6a00ff, #c000ff);
+  border:none;
+  border-radius:6px;
+  color:white;
+  font-size:1em;
+  cursor:pointer;
+  margin-top:10px;
+  transition: all 0.3s;
+}
+button:hover {
+  box-shadow:0 0 15px #fff;
+  transform: scale(1.05);
+}
+
+/* 结果卡片 */
+.result-card {
+  margin-top:20px;
+  background: rgba(255,255,255,0.1);
+  padding:20px;
+  border-radius:15px;
+  display:none;
+  text-align:left;
+  max-width:400px;
+  margin-left:auto;
+  margin-right:auto;
+  box-shadow:0 0 15px rgba(255,255,255,0.2);
+  animation: fadein 0.8s;
+}
+@keyframes fadein { from {opacity:0;} to{opacity:1;} }
+
+.pay-btn {
+  margin-top:15px;
+  background: linear-gradient(to right, #ff6a00, #ffb84d);
+  color:white;
+  font-weight:bold;
+  width:100%;
+  padding:12px 0;
+  border-radius:10px;
+  font-size:1.1em;
+}
+.pay-btn:hover { box-shadow:0 0 15px #ffb84d; transform: scale(1.05); }
+
+/* 语言切换 */
+.lang-switch {
+  position:absolute;
+  top:10px;
+  right:10px;
+  cursor:pointer;
+  background:rgba(255,255,255,0.1);
+  padding:5px 12px;
+  border-radius:5px;
+  font-weight:bold;
+}
+
+/* 脚注 */
+footer {
+  margin-top:50px;
+  font-size:0.8em;
+  color:#ccc;
 }
 </style>
 </head>
-
 <body>
 
-<h1>Astrology Birth Chart</h1>
+<div class="lang-switch" onclick="switchLang()">EN / MS</div>
 
-<p>Enter your birth date to discover your zodiac sign</p>
+<h1 id="title">✨ Carta Lahir Astrology ✨</h1>
 
-<input type="date">
+<div class="input-container">
+  <input type="date" id="birthdate">
+  <input type="time" id="birthtime">
+  <input type="text" id="birthplace" placeholder="Bandar / City">
+  <br>
+  <button onclick="calculateSign()">Kira / Calculate</button>
+</div>
 
-<br><br>
+<div class="result-card" id="result">
+  <p id="sunSign"></p>
+  <p id="moonSign"></p>
+  <p id="risingSign"></p>
+  <button class="pay-btn" onclick="payNow()">RM9.90 - Akan Datang / Unlock</button>
+</div>
 
-<button>Calculate</button>
+<footer>
+  Kandungan ini hanya untuk hiburan sahaja - Content for Entertainment Only
+</footer>
 
-<p style="margin-top:40px;font-size:12px;">
-For Entertainment Only
-</p>
+<script>
+// 星空动画
+for(let i=0;i<120;i++){
+  let star=document.createElement('div');
+  star.className='star';
+  star.style.top=Math.random()*100+'%';
+  star.style.left=Math.random()*100+'%';
+  star.style.width=Math.random()*2+1+'px';
+  star.style.height=star.style.width;
+  star.style.animationDuration=(Math.random()*3+1)+'s';
+  document.body.appendChild(star);
+}
+
+// 双语切换
+let lang='ms';
+function switchLang(){ lang=(lang==='ms')?'en':'ms'; updateText(); }
+function updateText(){
+  if(lang==='ms'){
+    document.getElementById('title').innerText='✨ Carta Lahir Astrology ✨';
+    document.getElementById('birthplace').placeholder='Bandar / City';
+    document.querySelector('.input-container button').innerText='Kira / Calculate';
+    document.querySelector('.pay-btn').innerText='RM9.90 - Akan Datang';
+  } else {
+    document.getElementById('title').innerText='✨ Astrology Birth Chart ✨';
+    document.getElementById('birthplace').placeholder='City';
+    document.querySelector('.input-container button').innerText='Calculate';
+    document.querySelector('.pay-btn').innerText='RM9.90 - Coming Soon';
+  }
+}
+
+// 占星文案
+const sunTexts = {
+  Aries:"🌟 Anda berani dan penuh semangat. Hari ini, berikan diri anda satu peluang untuk bersinar.",
+  Taurus:"🌿 Anda stabil dan penyayang. Hari ini, rehat sebentar dan nikmati ketenangan.",
+  Gemini:"💫 Anda bijak dan fleksibel. Hari ini, fikirkan satu idea baru untuk diri anda.",
+  Cancer:"🌙 Anda sensitif dan penyayang. Hari ini, beri perhatian kepada hati sendiri.",
+  Leo:"🔥 Anda bercahaya dan berani. Hari ini, biarkan kehangatan anda menyinari orang lain.",
+  Virgo:"🍃 Anda teliti dan peduli. Hari ini, fokus pada apa yang membuat anda tenang.",
+  Libra:"⚖️ Anda harmoni dan penyayang. Hari ini, cuba senyum pada diri sendiri.",
+  Scorpio:"🦂 Anda misteri dan mendalam. Hari ini, hadapi perasaan anda dengan keberanian.",
+  Sagittarius:"🏹 Anda ceria dan bebas. Hari ini, biarkan diri anda bermimpi besar.",
+  Capricorn:"⛰️ Anda disiplin dan fokus. Hari ini, capai satu matlamat kecil.",
+  Aquarius:"💎 Anda unik dan kreatif. Hari ini, kongsikan idea anda dengan dunia.",
+  Pisces:"🌊 Anda sensitif dan intuitif. Hari ini, beri masa untuk berimaginasi."
+};
+
+const moonRisingTexts = {
+  ms:"🌟 Bulan dan Ascendant anda penuh misteri. Unlock RM9.90 untuk melihat rahsia diri anda.",
+  en:"🌟 Your Moon and Ascendant hide secrets. Unlock RM9.90 to reveal your true self."
+};
+
+// 占星计算
+function calculateSign(){
+  let date=document.getElementById('birthdate').value;
+  if(!date){ alert(lang==='ms'?'Sila pilih tarikh lahir':'Please select birth date'); return;}
+  document.getElementById('result').style.display='block';
+  
+  let sun=['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
+  let sunSign=sun[Math.floor(Math.random()*12)];
+  document.getElementById('sunSign').innerText=(lang==='ms'?'Matahari / Sun: ':'Sun Sign: ')+sunSign+"\n"+sunTexts[sunSign];
+  
+  document.getElementById('moonSign').innerText=(lang==='ms'?'Bulan / Moon: ???':'Moon Sign: ???')+"\n"+moonRisingTexts[lang];
+  document.getElementById('risingSign').innerText=(lang==='ms'?'Rising / Ascendant: ???':'Rising Sign: ???')+"\n"+moonRisingTexts[lang];
+}
+
+// 模拟付费按钮
+function payNow(){
+  alert(lang==='ms'?'🌟 RM9.90 Akan Datang! Unlock rahsia diri anda':'🌟 RM9.90 Coming Soon! Unlock your true self');
+}
+
+updateText();
+</script>
 
 </body>
 </html>
