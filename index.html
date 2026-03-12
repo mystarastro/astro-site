@@ -5,106 +5,114 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>My Astrology Website</title>
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+
 body {
   margin:0;
-  font-family:'Arial',sans-serif;
-  background: linear-gradient(to bottom, #0b0033, #1a0a4a);
-  color: #fff;
-  text-align:center;
-  min-height:100vh;
+  font-family:'Montserrat', sans-serif;
+  background: radial-gradient(ellipse at center, #0b0033 0%, #1a0a4a 100%);
+  color:#fff;
   overflow-x:hidden;
   position:relative;
 }
 h1 {
-  margin-top:50px;
-  font-size:2em;
-  text-shadow: 0 0 15px #a36cff;
+  margin-top:60px;
+  font-size:2.4em;
+  text-shadow: 0 0 25px #a36cff;
+  text-align:center;
 }
-p { font-size:1em; line-height:1.4em; }
-
-/* 动态星星 */
-@keyframes twinkle {0%,100%{opacity:0.8;}50%{opacity:0.2;}}
-.star {
+.lang-switch {
   position:absolute;
-  background:#fff;
+  top:15px;
+  right:15px;
+  background:rgba(255,255,255,0.1);
+  padding:6px 12px;
+  border-radius:5px;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+/* 星空星星 */
+.star, .shooting-star {
+  position:absolute;
   border-radius:50%;
+  background:#fff;
+  opacity:0.8;
+}
+.shooting-star {
   width:2px;
   height:2px;
-  animation:twinkle 2s infinite;
+  animation:shoot 2s linear infinite;
+}
+@keyframes shoot {
+  0% {transform:translate(0,0);opacity:1;}
+  100% {transform:translate(800px,400px);opacity:0;}
 }
 
-/* 输入区域 */
-.input-container { margin-top:30px; }
-input, select {
+/* 输入区 */
+.input-container {
+  margin-top:30px;
+  text-align:center;
+}
+.input-container input {
   padding:12px;
   margin:5px;
-  border-radius:5px;
   border:none;
+  border-radius:8px;
   font-size:1em;
-  width:calc(30% - 12px);
+  width:calc(28% - 10px);
   min-width:100px;
 }
 button {
   padding:12px 25px;
-  background: linear-gradient(to right, #6a00ff, #c000ff);
   border:none;
-  border-radius:6px;
-  color:white;
+  border-radius:10px;
   font-size:1em;
   cursor:pointer;
   margin-top:10px;
+  background: linear-gradient(90deg, #6a00ff, #c000ff);
+  color:white;
   transition: all 0.3s;
 }
-button:hover {
-  box-shadow:0 0 15px #fff;
-  transform: scale(1.05);
-}
+button:hover { box-shadow:0 0 25px #fff; transform:scale(1.05); }
 
 /* 结果卡片 */
 .result-card {
-  margin-top:20px;
-  background: rgba(255,255,255,0.1);
-  padding:20px;
-  border-radius:15px;
+  margin:30px auto;
+  max-width:460px;
+  padding:25px;
+  background: rgba(255,255,255,0.08);
+  border-radius:20px;
+  box-shadow:0 0 25px rgba(255,255,255,0.25);
   display:none;
   text-align:left;
-  max-width:400px;
-  margin-left:auto;
-  margin-right:auto;
-  box-shadow:0 0 15px rgba(255,255,255,0.2);
-  animation: fadein 0.8s;
+  animation:fadein 1s;
 }
-@keyframes fadein { from {opacity:0;} to{opacity:1;} }
+@keyframes fadein {from{opacity:0;}to{opacity:1;}}
+.result-card p { margin:12px 0; line-height:1.6em; font-size:1em; }
 
+/* 付费按钮 */
 .pay-btn {
-  margin-top:15px;
-  background: linear-gradient(to right, #ff6a00, #ffb84d);
-  color:white;
-  font-weight:bold;
   width:100%;
-  padding:12px 0;
-  border-radius:10px;
-  font-size:1.1em;
-}
-.pay-btn:hover { box-shadow:0 0 15px #ffb84d; transform: scale(1.05); }
-
-/* 语言切换 */
-.lang-switch {
-  position:absolute;
-  top:10px;
-  right:10px;
-  cursor:pointer;
-  background:rgba(255,255,255,0.1);
-  padding:5px 12px;
-  border-radius:5px;
+  padding:14px 0;
+  font-size:1.15em;
   font-weight:bold;
+  border-radius:15px;
+  border:none;
+  background: linear-gradient(90deg, #ff6a00, #ffb84d);
+  cursor:pointer;
+  transition: all 0.3s;
+  margin-top:15px;
 }
+.pay-btn:hover { box-shadow:0 0 30px #ffb84d; transform:scale(1.05); }
 
 /* 脚注 */
-footer {
-  margin-top:50px;
-  font-size:0.8em;
-  color:#ccc;
+footer { margin-top:50px; font-size:0.85em; color:#ccc; text-align:center; }
+
+/* 响应式 */
+@media(max-width:500px){
+  .input-container input { width:80%; margin:5px 0; }
+  .result-card { width:90%; }
 }
 </style>
 </head>
@@ -130,19 +138,19 @@ footer {
 </div>
 
 <footer>
-  Kandungan ini hanya untuk hiburan sahaja - Content for Entertainment Only
+Kandungan ini hanya untuk hiburan sahaja - Content for Entertainment Only
 </footer>
 
 <script>
-// 星空动画
+// 生成星星
 for(let i=0;i<120;i++){
   let star=document.createElement('div');
   star.className='star';
   star.style.top=Math.random()*100+'%';
   star.style.left=Math.random()*100+'%';
-  star.style.width=Math.random()*2+1+'px';
-  star.style.height=star.style.width;
-  star.style.animationDuration=(Math.random()*3+1)+'s';
+  let size=Math.random()*2+1+'px';
+  star.style.width=size; star.style.height=size;
+  star.style.opacity=Math.random();
   document.body.appendChild(star);
 }
 
@@ -165,44 +173,34 @@ function updateText(){
 
 // 占星文案
 const sunTexts = {
-  Aries:"🌟 Anda berani dan penuh semangat. Hari ini, berikan diri anda satu peluang untuk bersinar.",
-  Taurus:"🌿 Anda stabil dan penyayang. Hari ini, rehat sebentar dan nikmati ketenangan.",
-  Gemini:"💫 Anda bijak dan fleksibel. Hari ini, fikirkan satu idea baru untuk diri anda.",
-  Cancer:"🌙 Anda sensitif dan penyayang. Hari ini, beri perhatian kepada hati sendiri.",
-  Leo:"🔥 Anda bercahaya dan berani. Hari ini, biarkan kehangatan anda menyinari orang lain.",
-  Virgo:"🍃 Anda teliti dan peduli. Hari ini, fokus pada apa yang membuat anda tenang.",
-  Libra:"⚖️ Anda harmoni dan penyayang. Hari ini, cuba senyum pada diri sendiri.",
-  Scorpio:"🦂 Anda misteri dan mendalam. Hari ini, hadapi perasaan anda dengan keberanian.",
-  Sagittarius:"🏹 Anda ceria dan bebas. Hari ini, biarkan diri anda bermimpi besar.",
-  Capricorn:"⛰️ Anda disiplin dan fokus. Hari ini, capai satu matlamat kecil.",
-  Aquarius:"💎 Anda unik dan kreatif. Hari ini, kongsikan idea anda dengan dunia.",
-  Pisces:"🌊 Anda sensitif dan intuitif. Hari ini, beri masa untuk berimaginasi."
+  Aries:"🌟 Berani & penuh semangat. Hari ini, beri diri peluang bersinar.",
+  Taurus:"🌿 Stabil & penyayang. Rehat sebentar & nikmati ketenangan.",
+  Gemini:"💫 Bijak & fleksibel. Fikirkan idea baru hari ini.",
+  Cancer:"🌙 Sensitif & penyayang. Perhatikan hati sendiri.",
+  Leo:"🔥 Bercahaya & berani. Biarkan kehangatan anda menyinari orang lain.",
+  Virgo:"🍃 Teliti & peduli. Fokus pada apa yang menenangkan.",
+  Libra:"⚖️ Harmoni & penyayang. Senyum pada diri sendiri.",
+  Scorpio:"🦂 Misteri & mendalam. Hadapi perasaan dengan berani.",
+  Sagittarius:"🏹 Ceria & bebas. Biarkan diri bermimpi besar.",
+  Capricorn:"⛰️ Disiplin & fokus. Capai satu matlamat kecil.",
+  Aquarius:"💎 Unik & kreatif. Kongsikan idea anda dengan dunia.",
+  Pisces:"🌊 Sensitif & intuitif. Beri masa untuk imaginasi."
 };
+const moonRisingTexts={ms:"🌟 Bulan & Ascendant misteri. Unlock RM9.90 untuk rahsia diri anda.",en:"🌟 Your Moon & Ascendant hide secrets. Unlock RM9.90 to reveal your true self"};
 
-const moonRisingTexts = {
-  ms:"🌟 Bulan dan Ascendant anda penuh misteri. Unlock RM9.90 untuk melihat rahsia diri anda.",
-  en:"🌟 Your Moon and Ascendant hide secrets. Unlock RM9.90 to reveal your true self."
-};
-
-// 占星计算
 function calculateSign(){
   let date=document.getElementById('birthdate').value;
   if(!date){ alert(lang==='ms'?'Sila pilih tarikh lahir':'Please select birth date'); return;}
   document.getElementById('result').style.display='block';
-  
   let sun=['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
   let sunSign=sun[Math.floor(Math.random()*12)];
   document.getElementById('sunSign').innerText=(lang==='ms'?'Matahari / Sun: ':'Sun Sign: ')+sunSign+"\n"+sunTexts[sunSign];
-  
   document.getElementById('moonSign').innerText=(lang==='ms'?'Bulan / Moon: ???':'Moon Sign: ???')+"\n"+moonRisingTexts[lang];
   document.getElementById('risingSign').innerText=(lang==='ms'?'Rising / Ascendant: ???':'Rising Sign: ???')+"\n"+moonRisingTexts[lang];
 }
-
-// 模拟付费按钮
 function payNow(){
   alert(lang==='ms'?'🌟 RM9.90 Akan Datang! Unlock rahsia diri anda':'🌟 RM9.90 Coming Soon! Unlock your true self');
 }
-
 updateText();
 </script>
 
